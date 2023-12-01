@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{commons::head}"></head>
+
+<body>
+<!-- Topbar Start -->
+<div th:replace="~{commons::topbar}"></div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+<div th:replace="~{commons::navbar}"></div>
+<!-- Navbar End -->
+
+
+<!-- Breadcrumb Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" th:href="@{/}">Home</a>
+                <a class="breadcrumb-item text-dark" th:href="@{/shop}">Shop</a>
+                <span class="breadcrumb-item active">Shopping Cart</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+
+<!-- Cart Start -->
+<form
+    method="post"
+    th:action="@{/cart/update}"
+    th:object="${carts}"
+>
+    <fieldset>
+        <div class="container-fluid">
+            <div class="row px-xl-5">
+                <div class="col-lg-8 table-responsive mb-5">
+                    <table class="table table-light table-borderless table-hover text-center mb-0">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Images</th>
+                            <th>Products</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody class="align-middle">
+                        <tr th:each=" item, itemStat: *{cartList}">
+                            <td class="align-middle"><img th:src="@{|/product/image/${item.product.productId}|}"
+                                                          alt="rasm" style="width: 50px;" >
+                            </td>
+                            <td class="align-middle" th:text="${item.product.name}"></td>
+                            <td class="align-middle" th:text="${item.product.price}"></td>
+                            <td class="align-middle">
+                                <div class="input-group quantity mx-auto" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary btn-minus">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" id="count" name="count"
+                                           class="form-control form-control-sm bg-secondary border-0 text-center"
+                                           th:value="${item.count}" th:field="*{cartList[__${itemStat.index}__].count}" />
+
+
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary btn-plus">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="hidden"
+                                       th:value="${item.token}" th:field="*{cartList[__${itemStat.index}__].token}" />
+                                <input type="hidden"
+                                       th:value="${item.product}" th:field="*{cartList[__${itemStat.index}__].product}" />
+                                <input type="hidden"
+                                       th:value="${item.id}" th:field="*{cartList[__${itemStat.index}__].id}" />
+                            </td>
+                            <!--                            <td class="align-middle"><a href="@{'/delete/' + ${item.product.productId}}" /><i class="fa fa-times"><button class="btn btn-sm btn-danger"></button></i></td>-->
+                            <td class="align-middle">
+                                <a class="btn btn-sm btn-danger"
+                                   th:href="@{'/cart/delete/' + ${item.id}}" role="button">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span>
+                    </h5>
+                    <div class="bg-light p-30 mb-5">
+                        <div class="pt-2">
+                            <div class="d-flex justify-content-between mt-2">
+                                <h5>Total</h5>
+                                <span th:with="total=${#aggregates.sum(carts.cartList.![count * product.price])}"
+                                      th:text="@{${total}} + ' so&rsquo;m'"></span>
+
+                            </div>
+                            <button type="submit" class="btn btn-block btn-primary font-weight-bold my-3 py-3">
+                            Recalculate Total Cost
+                            </button>
+                            <a th:href="@{/checkout}" class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed
+                                To Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<!-- Cart End -->
+
+
+<!-- Footer Start -->
+<div th:replace="~{commons::footer}"></div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a th:replace="~{commons::top}" href=""></a>
+
+
+<!-- JavaScript Libraries -->
+<th:block th:replace="~{commons::scripts}"></th:block>
+</body>
+
+</html>
